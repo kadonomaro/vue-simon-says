@@ -1,6 +1,6 @@
 <template>
 	<div class="game-settings">
-		<h2 class="game-settings__title">Настройки</h2>
+		<span class="game-settings__title">Настройки</span>
 		<span class="game-settings__field-caption">Сложность:</span>
 		<select class="game-settings__field" v-model="game.difficulty" @change="changeHandler">
 			<option value="easy">Легкий</option>
@@ -30,7 +30,11 @@ export default {
 
 <style lang="scss">
 	.game-settings {
+		padding: 20px 0;
 		&__title {
+			display: block;
+			font-size: 24px;
+			font-weight: bold;
 			margin: 0 0 10px;
 		}
 		&__field-caption {
@@ -40,7 +44,7 @@ export default {
 		}
 		&__field {
 			padding: 4px 8px;
-			border: 2px solid #707070;
+			border: 2px solid #6dabE8;
 		}
 	}
 </style>
