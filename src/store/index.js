@@ -4,12 +4,19 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+	state: {
+		game: {
+			difficulty: 'easy'
+		}
   },
-  mutations: {
+	mutations: {
+		SET_GAME_DIFFICULTY(state, difficulty) {
+			state.game.difficulty = difficulty;
+		}
   },
-  actions: {
-  },
-  modules: {
+	actions: {
+		changeGameDifficulty({ commit }, difficulty) {
+			commit('SET_GAME_DIFFICULTY', difficulty);
+		}
   }
 })
