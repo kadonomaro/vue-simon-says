@@ -28,7 +28,7 @@
 		</div>
 		<div>player: {{ playerQueue }}</div>
 		<div>game: {{ gameQueue }}</div>
-		{{ isEqual }}
+		<span class="game-panel__message" v-if="getStatus === 'finish'">Вы проиграли после {{ getMaxRound }}</span>
 	</div>
 </template>
 
@@ -37,6 +37,7 @@ import blueSound from '@/assets/sounds/blue.mp3';
 import redSound from '@/assets/sounds/red.mp3';
 import yellowSound from '@/assets/sounds/yellow.mp3';
 import greenSound from '@/assets/sounds/green.mp3';
+import failSound from '@/assets/sounds/fail.mp3';
 import { randomRange } from '@/helpers/randomRange';
 import { mapGetters } from 'vuex';
 
@@ -50,13 +51,11 @@ export default {
 				'yellow': yellowSound,
 				'green': greenSound
 			},
+			failSound,
 			gameQueue: [],
 			playerQueue: [],
-			isEqual: false
+			isEqual: null
 		}
-	},
-	mounted() {
-
 	},
 	methods: {
 		clickHandler(color) {
@@ -79,13 +78,31 @@ export default {
 			this.playerQueue.length = 0;
 		},
 
+		startNextRound() {
+			this.$store.dispatch('changeGameRound', this.getRound + 1);
+			setTimeout(() => {
+				this.startGame();
+			}, 1000);
+		},
+
+		finishGame() {
+			this.clearGame();
+			this.$store.dispatch('changeGameStatus', 'finish');
+			this.$store.dispatch('changeGameRound', 1);
+			setTimeout(() => {
+				this.playSound(this.failSound);
+			}, 1000);
+		},
+
 		checkDifference() {
 			this.isEqual = this.gameQueue.every((value, index) => value === this.playerQueue[index]);
+
+			if(!this.isEqual && (this.gameQueue.length === this.playerQueue.length)) {
+				this.finishGame();
+			}
+
 			if (this.isEqual) {
-				this.$store.dispatch('incrementGameRound');
-				setTimeout(() => {
-					this.startGame();
-				}, 1000);
+				this.startNextRound();
 			}
 		},
 
@@ -126,7 +143,8 @@ export default {
 		...mapGetters([
 			'getRound',
 			'getDifficulty',
-			'getStatus'
+			'getStatus',
+			'getMaxRound'
 		])
 	},
 	watch: {

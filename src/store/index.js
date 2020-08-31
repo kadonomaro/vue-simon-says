@@ -8,7 +8,8 @@ export default new Vuex.Store({
 		game: {
 			round: 1,
 			difficulty: 'easy',
-			status: 'wait' //wait, start, finish
+			status: 'wait', //wait, start, finish,
+			max: null
 		}
   },
 	mutations: {
@@ -20,8 +21,12 @@ export default new Vuex.Store({
 			state.game.status = status;
 		},
 
-		INCREMENT_GAME_ROUND(state) {
-			state.game.round++;
+		CHANGE_GAME_ROUND(state, round) {
+			state.game.round = round;
+		},
+
+		CHANGE_GAME_MAX_ROUND(state, round) {
+			state.game.max = round;
 		}
   },
 	actions: {
@@ -30,11 +35,14 @@ export default new Vuex.Store({
 		},
 
 		changeGameStatus({ commit }, status) {
+			if (status === 'finish') {
+				commit('CHANGE_GAME_MAX_ROUND', this.state.game.round);
+			}
 			commit('SET_GAME_STATUS', status);
 		},
 
-		incrementGameRound({ commit }) {
-			commit('INCREMENT_GAME_ROUND');
+		changeGameRound({ commit }, round) {
+			commit('CHANGE_GAME_ROUND', round);
 		}
 	},
 	getters: {
@@ -55,6 +63,9 @@ export default new Vuex.Store({
 		},
 		getStatus(state) {
 			return state.game.status;
+		},
+		getMaxRound(state) {
+			return state.game.max;
 		}
 	}
 })
