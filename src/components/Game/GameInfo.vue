@@ -1,13 +1,20 @@
 <template>
 	<div class="game-info">
-		<span class="game-info__title">Раунд: {{ 2 }}</span>
+		<span class="game-info__title">Раунд: {{ getRound }}</span>
 		<button class="game-info__button">Старт</button>
 	</div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-	name: 'GameInfo'
+	name: 'GameInfo',
+	computed: {
+		...mapGetters([
+			'getRound'
+		])
+	}
 }
 </script>
 

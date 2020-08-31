@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		game: {
+			round: 1,
 			difficulty: 'easy'
 		}
   },
@@ -18,5 +19,10 @@ export default new Vuex.Store({
 		changeGameDifficulty({ commit }, difficulty) {
 			commit('SET_GAME_DIFFICULTY', difficulty);
 		}
-  }
+	},
+	getters: {
+		getRound(state) {
+			return state.game.round;
+		}
+	}
 })
