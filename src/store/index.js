@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		game: {
-			round: 5,
+			round: 1,
 			difficulty: 'easy',
 			status: 'wait' //wait, start, finish
 		}
@@ -18,6 +18,10 @@ export default new Vuex.Store({
 
 		SET_GAME_STATUS(state, status) {
 			state.game.status = status;
+		},
+
+		INCREMENT_GAME_ROUND(state) {
+			state.game.round++;
 		}
   },
 	actions: {
@@ -27,6 +31,10 @@ export default new Vuex.Store({
 
 		changeGameStatus({ commit }, status) {
 			commit('SET_GAME_STATUS', status);
+		},
+
+		incrementGameRound({ commit }) {
+			commit('INCREMENT_GAME_ROUND');
 		}
 	},
 	getters: {

@@ -5,27 +5,30 @@
 				class="game-panel__button"
 				style="background-color: #1e90ff;"
 				ref="blue"
-				@click="playSound(sounds['blue'])"
+				@click="clickHandler('blue')"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #ff5643;"
 				ref="red"
-				@click="playSound(sounds['red'])"
+				@click="clickHandler('red')"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #feef33;"
 				ref="yellow"
-				@click="playSound(sounds['yellow'])"
+				@click="clickHandler('yellow')"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #bede15;"
 				ref="green"
-				@click="playSound(sounds['green'])"
+				@click="clickHandler('green')"
 			></button>
 		</div>
+		<div>player: {{ playerQueue }}</div>
+		<div>game: {{ gameQueue }}</div>
+		{{ isEqual }}
 	</div>
 </template>
 
@@ -47,13 +50,45 @@ export default {
 				'yellow': yellowSound,
 				'green': greenSound
 			},
-			queue: []
+			gameQueue: [],
+			playerQueue: [],
+			isEqual: false
 		}
 	},
 	mounted() {
 
 	},
 	methods: {
+		clickHandler(color) {
+			if (this.getStatus === 'start') {
+				this.playSound(this.sounds[color]);
+				this.highlightButton(color);
+				this.playerQueue.push(color);
+				this.checkDifference();
+			}
+		},
+
+		startGame() {
+			this.clearGame();
+			this.fillGameQueue();
+			this.playGameQueue();
+		},
+
+		clearGame() {
+			this.gameQueue.length = 0;
+			this.playerQueue.length = 0;
+		},
+
+		checkDifference() {
+			this.isEqual = this.gameQueue.every((value, index) => value === this.playerQueue[index]);
+			if (this.isEqual) {
+				this.$store.dispatch('incrementGameRound');
+				setTimeout(() => {
+					this.startGame();
+				}, 1000);
+			}
+		},
+
 		playSound(sound) {
 			if (sound) {
 				const audio = new Audio(sound);
@@ -61,17 +96,17 @@ export default {
 			}
 		},
 
-		fillQueue() {
+		fillGameQueue() {
 			for (let i = 0; i < this.getRound; i++) {
-				this.queue.push(Object.keys(this.sounds)[randomRange(0, 3)]);
+				this.gameQueue.push(Object.keys(this.sounds)[randomRange(0, 3)]);
 			}
 		},
 
-		playQueue() {
+		playGameQueue() {
 			let counter = 0;
 			const interval = setInterval(() => {
-				this.playSound(this.sounds[this.queue[counter]]);
-				this.highlightButton(this.queue[counter]);
+				this.playSound(this.sounds[this.gameQueue[counter]]);
+				this.highlightButton(this.gameQueue[counter]);
 				counter++;
 
 				if (counter >= this.getRound) {
@@ -97,8 +132,7 @@ export default {
 	watch: {
 		getStatus(value) {
 			if (value === 'start') {
-				this.fillQueue();
-				this.playQueue();
+				this.startGame();
 			}
 		}
 	}
@@ -119,13 +153,10 @@ export default {
 		&__button {
 			width: 50%;
 			border: none;
-			cursor: pointer;
 			outline: none;
 			transition: opacity 0.1s ease-in;
 			opacity: 0.5;
-			&:active {
-				opacity: 1;
-			}
+			cursor: pointer;
 		}
 		&__button--active {
 			opacity: 1;

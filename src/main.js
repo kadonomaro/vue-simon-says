@@ -3,6 +3,7 @@ import App from './App.vue'
 import store from './store'
 
 Vue.config.productionTip = false
+Vue.config.devtools = true
 
 new Vue({
   store,
