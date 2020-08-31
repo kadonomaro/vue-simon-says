@@ -1,7 +1,7 @@
 <template>
 	<div class="game-info">
 		<span class="game-info__title">Раунд: {{ getRound }}</span>
-		<button class="game-info__button">Старт</button>
+		<button class="game-info__button" @click="clickHandler">Старт</button>
 	</div>
 </template>
 
@@ -10,6 +10,11 @@ import { mapGetters } from 'vuex';
 
 export default {
 	name: 'GameInfo',
+	methods: {
+		clickHandler() {
+			this.$store.dispatch('changeGameStatus', 'start');
+		}
+	},
 	computed: {
 		...mapGetters([
 			'getRound'

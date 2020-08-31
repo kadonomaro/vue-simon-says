@@ -4,21 +4,25 @@
 			<button
 				class="game-panel__button"
 				style="background-color: #1e90ff;"
+				ref="blue"
 				@click="playSound(sounds['blue'])"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #ff5643;"
+				ref="red"
 				@click="playSound(sounds['red'])"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #feef33;"
+				ref="yellow"
 				@click="playSound(sounds['yellow'])"
 			></button>
 			<button
 				class="game-panel__button"
 				style="background-color: #bede15;"
+				ref="green"
 				@click="playSound(sounds['green'])"
 			></button>
 		</div>
@@ -47,8 +51,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fillQueue();
-		this.playQueue();
+
 	},
 	methods: {
 		playSound(sound) {
@@ -68,18 +71,36 @@ export default {
 			let counter = 0;
 			const interval = setInterval(() => {
 				this.playSound(this.sounds[this.queue[counter]]);
+				this.highlightButton(this.queue[counter]);
 				counter++;
 
 				if (counter >= this.getRound) {
 					clearInterval(interval);
 				}
-			}, 1000);
+			}, this.getDifficulty);
+		},
+
+		highlightButton(button) {
+			this.$refs[button].classList.add('game-panel__button--active');
+			setTimeout(() => {
+				this.$refs[button].classList.remove('game-panel__button--active');
+			}, this.getDifficulty - 100);
 		}
 	},
 	computed: {
 		...mapGetters([
-			'getRound'
+			'getRound',
+			'getDifficulty',
+			'getStatus'
 		])
+	},
+	watch: {
+		getStatus(value) {
+			if (value === 'start') {
+				this.fillQueue();
+				this.playQueue();
+			}
+		}
 	}
 }
 </script>
@@ -105,6 +126,9 @@ export default {
 			&:active {
 				opacity: 1;
 			}
+		}
+		&__button--active {
+			opacity: 1;
 		}
 	}
 </style>
