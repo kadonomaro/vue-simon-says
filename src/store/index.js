@@ -21,11 +21,11 @@ export default new Vuex.Store({
 			state.game.status = status;
 		},
 
-		CHANGE_GAME_ROUND(state, round) {
+		SET_GAME_ROUND(state, round) {
 			state.game.round = round;
 		},
 
-		CHANGE_GAME_MAX_ROUND(state, round) {
+		SET_GAME_MAX_ROUND(state, round) {
 			state.game.max = round;
 		}
   },
@@ -36,13 +36,13 @@ export default new Vuex.Store({
 
 		changeGameStatus({ commit }, status) {
 			if (status === 'finish') {
-				commit('CHANGE_GAME_MAX_ROUND', this.state.game.round);
+				commit('SET_GAME_MAX_ROUND', this.state.game.round);
 			}
 			commit('SET_GAME_STATUS', status);
 		},
 
 		changeGameRound({ commit }, round) {
-			commit('CHANGE_GAME_ROUND', round);
+			commit('SET_GAME_ROUND', round);
 		}
 	},
 	getters: {
@@ -53,7 +53,7 @@ export default new Vuex.Store({
 		getDifficulty(state) {
 			switch (state.game.difficulty) {
 				case 'easy':
-					return 1400;
+					return 1500;
 				case 'medium':
 					return 1000;
 				case 'hard':
