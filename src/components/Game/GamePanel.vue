@@ -26,10 +26,7 @@
 				@click="clickHandler('green')"
 			></button>
 		</div>
-		<div>isEqual: {{ isEqual }}</div>
-		<div>player: {{ playerQueue }}</div>
-		<div>game: {{ gameQueue }}</div>
-		<span class="game-panel__message" v-if="getStatus === 'finish'">Вы проиграли после {{ getMaxRound }}</span>
+		<span class="game-panel__message" v-if="getStatus === 'finish'">Вы проиграли после {{ getMaxRound }} раунда</span>
 	</div>
 </template>
 
@@ -55,13 +52,15 @@ export default {
 			failSound,
 			gameQueue: [],
 			playerQueue: [],
-			isEqual: null,
-			isEnable: false
+			isEqual: false,
+			isEnable: false,
+			index: -1
 		}
 	},
 	methods: {
 		clickHandler(color) {
 			if (this.getStatus === 'start' && this.isEnable) {
+				this.index++;
 				this.playSound(this.sounds[color]);
 				this.highlightButton(color);
 				this.playerQueue.push(color);
@@ -75,18 +74,6 @@ export default {
 			this.playGameQueue();
 		},
 
-		clearGame() {
-			this.gameQueue.length = 0;
-			this.playerQueue.length = 0;
-		},
-
-		startNextRound() {
-			this.$store.dispatch('changeGameRound', this.getRound + 1);
-			setTimeout(() => {
-				this.startGame();
-			}, 1000);
-		},
-
 		finishGame() {
 			this.clearGame();
 			this.$store.dispatch('changeGameStatus', 'finish');
@@ -96,15 +83,26 @@ export default {
 			}, 1000);
 		},
 
+		clearGame() {
+			this.gameQueue.length = 0;
+			this.playerQueue.length = 0;
+			this.index = -1;
+		},
+
+		startNextRound() {
+			this.$store.dispatch('changeGameRound', this.getRound + 1);
+			setTimeout(() => {
+				this.startGame();
+			}, 1000);
+		},
+
 		checkDifference() {
-			this.isEqual = this.gameQueue.every((value, index) => value === this.playerQueue[index]);
+			this.isEqual = this.gameQueue[this.index] === this.playerQueue[this.index];
 
-			if(!this.isEqual && (this.gameQueue.length === this.playerQueue.length)) {
-				this.finishGame();
-			}
-
-			if (this.isEqual) {
+			if (this.isEqual && this.gameQueue.length === this.playerQueue.length) {
 				this.startNextRound();
+			} else if (!this.isEqual){
+				this.finishGame();
 			}
 		},
 
@@ -168,6 +166,7 @@ export default {
 			flex-wrap: wrap;
 			width: 350px;
 			height: 350px;
+			margin-bottom: 20px;
 			border-radius: 50%;
 			overflow: hidden;
 			box-sizing: border-box;
@@ -182,6 +181,11 @@ export default {
 		}
 		&__button--active {
 			opacity: 1;
+		}
+		&__message {
+			color: #ff0000;
+			font-size: 18px;
+			font-weight: bold;
 		}
 	}
 </style>
