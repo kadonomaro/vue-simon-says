@@ -8,7 +8,7 @@ export default new Vuex.Store({
 		game: {
 			round: 1,
 			difficulty: 'easy',
-			status: 'wait', //wait, start, finish,
+			status: 'wait',
 			max: null
 		}
   },
@@ -49,6 +49,7 @@ export default new Vuex.Store({
 		getRound(state) {
 			return state.game.round;
 		},
+
 		getDifficulty(state) {
 			switch (state.game.difficulty) {
 				case 'easy':
@@ -61,9 +62,11 @@ export default new Vuex.Store({
 					break;
 			}
 		},
+
 		getStatus(state) {
 			return state.game.status;
 		},
+
 		getMaxRound(state) {
 			return state.game.max;
 		}

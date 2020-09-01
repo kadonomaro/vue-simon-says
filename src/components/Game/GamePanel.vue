@@ -26,6 +26,7 @@
 				@click="clickHandler('green')"
 			></button>
 		</div>
+		<div>isEqual: {{ isEqual }}</div>
 		<div>player: {{ playerQueue }}</div>
 		<div>game: {{ gameQueue }}</div>
 		<span class="game-panel__message" v-if="getStatus === 'finish'">Вы проиграли после {{ getMaxRound }}</span>
@@ -54,12 +55,13 @@ export default {
 			failSound,
 			gameQueue: [],
 			playerQueue: [],
-			isEqual: null
+			isEqual: null,
+			isEnable: false
 		}
 	},
 	methods: {
 		clickHandler(color) {
-			if (this.getStatus === 'start') {
+			if (this.getStatus === 'start' && this.isEnable) {
 				this.playSound(this.sounds[color]);
 				this.highlightButton(color);
 				this.playerQueue.push(color);
@@ -120,6 +122,7 @@ export default {
 		},
 
 		playGameQueue() {
+			this.isEnable = false;
 			let counter = 0;
 			const interval = setInterval(() => {
 				this.playSound(this.sounds[this.gameQueue[counter]]);
@@ -128,6 +131,7 @@ export default {
 
 				if (counter >= this.getRound) {
 					clearInterval(interval);
+					this.isEnable = true;
 				}
 			}, this.getDifficulty);
 		},
