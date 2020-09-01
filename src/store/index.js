@@ -7,7 +7,7 @@ export default new Vuex.Store({
 	state: {
 		game: {
 			round: 1,
-			difficulty: 'hard', //need change on prod
+			difficulty: 'easy',
 			status: 'wait',
 			max: null
 		}
